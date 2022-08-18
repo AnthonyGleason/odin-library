@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Odin Library</title>
+        <link rel="stylesheet" href="css/styles.css">
+    </head>
+    <body>
+        <div class="library">
+            <div class="library-header">
+                <button onclick='document.getElementById("book-form").style.display = "block";' type="button" class="new-book-button">Add a new book</button>
+                <form id="book-form">
+                    <div class="book-form-field">
+                        <label for="title" >What is the title of this book?</label>
+                        <input type="text" id="title" placeholder="Harry Potter and the Sorcerer's Stone">
+                    </div>
+                    <div class="book-form-field">
+                        <label for="author">Who is the author of this book?</label>
+                        <input type="text" id="author" placeholder="J. K. Rowling">
+                    </div>
+                    <div class="book-form-field">
+                        <label for="pages">How many pages are in this book?</label>
+                        <input type="text" id="pages" placeholder="320">
+                    </div>
+                    <div class="book-form-field">
+                        <label for="read">Have you read this book?</label>
+                        <input type="radio" id="yes" name="read" value="yes">
+                        <label for="yes">Yes</label>
+                        <input type="radio" id="no" name="read" value="no">
+                        <label for="no">No</label>
+                    </div>
+                    <button type="button" onclick="addBookToLibrary(getInput());">Add Book</button>
+                    <button type="reset">Clear Form</button>
+                    <button type="button" onclick='document.getElementById("book-form").style.display = "none";'>X</button>
+                </form>
+            </div>
+            <div class="library-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Title</td>
+                            <td>Author</td>
+                            <td>Pages</td>
+                            <td>Read?</td>
+                        </tr>
+                    </thead>
+                    <tbody class="table-body">
+                        <tr>
+                            <td>Harry Potter and the Sorcerer's Stone</td>
+                            <td>J. K. Rowling</td>
+                            <td>320</td>
+                            <td>Yes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+    <script src="js/script.js"></script>
+</html>
