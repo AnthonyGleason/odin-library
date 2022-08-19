@@ -80,7 +80,7 @@ let prepareLibraryItem = function (tempLibraryItemDiv, libraryItem){
     tempData.addEventListener('click', (e)=>{
         //toggle the read status to true or false;
         let location = e.target.id.replace("read-button-","");
-        if (myLibrary[location].read==true || myLibrary[location].read=="true"){
+        if (myLibrary[location].read==true || myLibrary[location].read=="yes"){
             myLibrary[location].read=false;
         } else{
             myLibrary[location].read=true;
