@@ -1,7 +1,86 @@
+:root{
+    --background-color: #C8B7A6;
+    --button-color: #7D94B5;
+    --library-container-color: #C29591;
+}
+
 *{
     margin: 0;
     padding: 0;
+    font-family: Monsterrat;
+}
+
+body{
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--background-color);
+    display: grid;
+}
+.library{
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+    width: 100%;
+}
+.library-body{
+    display: flex;
+    flex-direction: column;
+}
+.library-body-item td{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.table-header tr{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 0.3fr 0.3fr;
+}
+.table-header tr td{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.table-body tr{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 0.3fr 0.3fr;
+}
+
+.library-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 #book-form{
-    display: none;
+    padding: 30px;
+    border-radius: 15px;
+    background-color: white;
+    position: fixed;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 0.1fr;
+    grid-template-areas:
+    "book-form-field-title exit-button"
+    "book-form-field-author exit-button"
+    "book-form-field-pages exit-button"
+    "book-form-field-read exit-button"
+    "add-book-button reset-form-button"
+}
+.book-form-field-title{
+    grid-area: book-form-field-title;
+}
+.book-form-field-author{
+    grid-area: book-form-field-author;
+}
+.book-form-field-pages{
+    grid-area: book-form-field-pages;
+}
+.book-form-field-read{
+    grid-area: book-form-field-read;
+}
+.add-book-button{
+    grid-area: add-book-button;
+}
+.reset-form-button{
+    grid-area: reset-form-button;
 }
