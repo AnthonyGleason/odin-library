@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Odin Library</title>
+    </head>
+    <body>
+        <form class="book-form">
+            <div class="book-form-title">
+                <label for="title" >What is the title of this book?</label>
+                <input type="text" id="title" placeholder="Harry Potter and the Sorcerer's Stone">
+            </div>
+            <div class="book-form-author">
+                <label for="author">Who is the author of this book?</label>
+                <input type="text" id="author" placeholder="J. K. Rowling">
+            </div>
+            <div class="book-form-pages">
+                <label for="pages">How many pages are in this book?</label>
+                <input type="text" id="pages" placeholder="320">
+            </div>
+            <div class="book-form-read">
+                <label for="read">Have you read this book?</label>
+                <input type="radio" id="yes" name="read" value="true">
+                <label for="yes">Yes</label>
+                <input type="radio" id="no" name="read" value="false">
+                <label for="no">No</label>
+            </div>
+            <button class="add-book-button" type="button">Add Book</button>
+            <button class="reset-form-button" type="reset">Clear Form</button>
+        </form>
+        <div class="library">
+            <!-- <div class="book-item">
+                <div class="book-title">Book Title</div>
+                <div class="book-author">Book Author</div>
+                <div class="book-pages">Book Pages</div>
+                <div class="book-read">Book Read</div>
+                <div class="book-button-container">
+                    <button class="book-change-read-status">Toggle Read</button>
+                    <button class="book-remove-button">Remove Book</button>
+                </div>
+            </div> -->
+        </div>
+    </body>
+    <script src="./main.js"></script>
+</html>
