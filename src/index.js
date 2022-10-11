@@ -73,6 +73,8 @@ Book.prototype.changeReadStatus = function(Library){
 //Library object
 let Library = function(){
     this.bookArray = [];
+    this.messageArray=[];
+    this.messageDiv=document.querySelector('.book-form-messages');
     this.bookForm = document.querySelector('.book-form');
     this.bookFormAddButton = document.querySelector('.add-book-button');
     this.libraryDiv = document.querySelector('.library');
@@ -89,7 +91,11 @@ Library.prototype.addBook = function(Book){
 
 //executes when the add-book-button is pressed
 Library.prototype.addBookFormValidate = function (title,author,pages,read){
-    
+    //check to see if any field has been left empty
+    if (title==='' || author==='' || pages==='' || read===''){
+        this.messageArray.push("One or more fields were left blank!");
+        return false;
+    };
     //return true or false if the form is validated
     return true;
 };
@@ -97,6 +103,8 @@ Library.prototype.addBookFormValidate = function (title,author,pages,read){
 Library.prototype.addButtonListeners = function (){
     //set the event listener for the book form's, add book button.
     this.bookFormAddButton.addEventListener('click',()=>{
+        //clear the error message field
+        this.messageDiv.textContent="";
         //get form values
         let title= this.bookForm.title.value;
         let author = this.bookForm.author.value;
@@ -110,6 +118,9 @@ Library.prototype.addButtonListeners = function (){
             this.addBook(new Book(title,author,pages,read))
         }else{
             //display errors here from a messages array which appends errors to it
+            this.messageDiv.textContent=this.messageArray.join(', ');
+            //clear the message array after its been displayed
+            this.messageArray=[];
         };
     });
 };
