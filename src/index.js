@@ -1,4 +1,6 @@
 import "./styles/styles.css";
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs , addDoc, updateDoc, deleteDoc, doc, Firestore, where, query, getDoc} from 'firebase/firestore/lite';
 
 //Book Object
 let Book = function(title,author,pages,read){
@@ -87,6 +89,8 @@ Library.prototype.addBook = function(Book){
     this.updateArrayIndexes();
     //update the library display
     this.updateLibraryDisplay();
+    //update the cloudstorage
+    storeBook(Book);
 };
 
 //executes when the add-book-button is pressed
@@ -125,12 +129,15 @@ Library.prototype.addButtonListeners = function (){
     });
 };
 Library.prototype.removeBook = function(Book){
+    //remove book from firebase
+    deleteBook(Book);
     //remove from array
     this.bookArray.splice(Book.index,1);
     //update array indexes
     this.updateArrayIndexes();
     //update the library display
     this.updateLibraryDisplay();
+    
 };
 
 Library.prototype.updateLibraryDisplay = function(){
@@ -151,8 +158,75 @@ Library.prototype.updateArrayIndexes = function(){
     });
 };
 
+let deleteBook = async function(Book){
+    console.log(Book);
+
+    /*
+
+
+    Everything works up to here
+    need a way to delete a book
+    and add a book to firebase
+
+
+    
+    */
+}
+
+let storeBook = async function({title, author, pages, read, index}){
+    try {
+        const docRef = await addDoc(collection(db, "books"), {
+            title: title,
+            author: author,
+            pages: pages,
+            read: read,
+        });
+        console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+};
+
+let getBooks = async function(Library){
+    //add books to array from cloud
+    const snapshot = await getDocs(collection(db,"books"));
+    snapshot.forEach((bookItem)=>{
+        //get book from snapshot item
+        let tempBook = bookItem._document.data.value.mapValue.fields;
+        let title = tempBook.title.stringValue;
+        let author = tempBook.author.stringValue;
+        let pages = tempBook.pages.stringValue;
+        let read = tempBook.read.stringValue;
+        //convert read to true or false from string
+        read=="true" ? read=true: read=false;
+        Library.bookArray.push(new Book(title,author,pages,read));
+    });
+    //update array indexes
+    Library.updateArrayIndexes();
+    //update the library display
+    Library.updateLibraryDisplay();
+};
+
 //initalize the library controller
 let LIBRARYCONTROLLER = new Library();
 
 //add the event listeners to the form
 LIBRARYCONTROLLER.addButtonListeners();
+
+
+//using firebase config from project
+const firebaseConfig = {
+    apiKey: "AIzaSyBSfxJU1sZsdUNCq91BVjCn38lYku81rcM",
+    authDomain: "odin-library-ba8fb.firebaseapp.com",
+    projectId: "odin-library-ba8fb",
+    storageBucket: "odin-library-ba8fb.appspot.com",
+    messagingSenderId: "198765589818",
+    appId: "1:198765589818:web:d288825bce3e5690b7cc03",
+    measurementId: "G-E1G2CMY5J9"
+};
+//initalize the firebase app with the config
+const app = initializeApp(firebaseConfig);
+//get the current database
+const db = getFirestore(app);
+//get initial books on load
+getBooks(LIBRARYCONTROLLER);
