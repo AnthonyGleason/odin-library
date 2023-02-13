@@ -3,12 +3,13 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs , addDoc, updateDoc, deleteDoc, doc, Firestore, where, query, getDoc} from 'firebase/firestore/lite';
 
 //Book Object
-let Book = function(title,author,pages,read){
+let Book = function(title,author,pages,read,ref){
     this.title=title;
     this.author=author;
     this.pages=pages;
     this.read=read;
     this.index;
+    this.ref=ref;
 };
 
 Book.prototype.createItem = function(Library){
@@ -65,10 +66,27 @@ Book.prototype.createItem = function(Library){
     return bookItem;
 };
 
-Book.prototype.changeReadStatus = function(Library){
+Book.prototype.changeReadStatus = async function(Library){
     //toggle read status
     this.read==true ? this.read=false : this.read=true;
-    //update the display
+    //update cloudstorage
+    updateDoc(doc(db,'books',this.ref),{
+        title: this.title,
+        author: this.author,
+        pages: this.pages,
+        read: this.read,
+        index: this.index,
+        ref: this.ref,
+    });
+    //clear bookArray
+    Library.bookArray=[];
+    //clear library div
+    Library.libraryDiv.innerHTML="";
+    //get books
+    await getBooks();
+    //update array indexes
+    Library.updateArrayIndexes();
+    //update the library display
     Library.updateLibraryDisplay();
 };
 
@@ -82,15 +100,19 @@ let Library = function(){
     this.libraryDiv = document.querySelector('.library');
 };
 
-Library.prototype.addBook = function(Book){
-    //add to array
-    this.bookArray.push(Book);
+Library.prototype.addBook = async function(Book){
+    //update the cloudstorage
+    await storeBook(Book);
+    //clear bookArray
+    this.bookArray=[];
+    //clear library div
+    this.libraryDiv.innerHTML="";
+    //get books
+    getBooks();
     //update array indexes
     this.updateArrayIndexes();
     //update the library display
     this.updateLibraryDisplay();
-    //update the cloudstorage
-    storeBook(Book);
 };
 
 //executes when the add-book-button is pressed
@@ -159,23 +181,13 @@ Library.prototype.updateArrayIndexes = function(){
 };
 
 let deleteBook = async function(Book){
-    console.log(Book);
-
-    /*
-
-
-    Everything works up to here
-    need a way to delete a book
-    and add a book to firebase
-
-
-    
-    */
+    await deleteDoc(doc(db,'books',Book.ref));
 }
 
 let storeBook = async function({title, author, pages, read, index}){
+    let docRef;
     try {
-        const docRef = await addDoc(collection(db, "books"), {
+        docRef = await addDoc(collection(db, "books"), {
             title: title,
             author: author,
             pages: pages,
@@ -185,9 +197,10 @@ let storeBook = async function({title, author, pages, read, index}){
         } catch (e) {
         console.error("Error adding document: ", e);
     }
+    await updateDoc(docRef,{ref: docRef._key.path.segments[1]});
 };
 
-let getBooks = async function(Library){
+let getBooks = async function(){
     //add books to array from cloud
     const snapshot = await getDocs(collection(db,"books"));
     snapshot.forEach((bookItem)=>{
@@ -196,15 +209,13 @@ let getBooks = async function(Library){
         let title = tempBook.title.stringValue;
         let author = tempBook.author.stringValue;
         let pages = tempBook.pages.stringValue;
-        let read = tempBook.read.stringValue;
-        //convert read to true or false from string
-        read=="true" ? read=true: read=false;
-        Library.bookArray.push(new Book(title,author,pages,read));
+        let read = tempBook.read.booleanValue;
+        LIBRARYCONTROLLER.bookArray.push(new Book(title,author,pages,read,bookItem._key.path.segments[6]));
     });
     //update array indexes
-    Library.updateArrayIndexes();
+    LIBRARYCONTROLLER.updateArrayIndexes();
     //update the library display
-    Library.updateLibraryDisplay();
+    LIBRARYCONTROLLER.updateLibraryDisplay();
 };
 
 //initalize the library controller
